@@ -14,6 +14,7 @@ GREEN = (180,255,180)
 PURPLE = (180,180,250)
 BROWN = (205,175,149)
 DARK_BROWN = (139,69,19)
+GREY = (150, 150, 150)
 
 myfont = pygame.font.SysFont(None, 40)
 
@@ -25,7 +26,7 @@ def updateTime():
     h_angle = pi*(1.0/6.0)*((hour+9)%12)
     m_angle = pi*(1.0/6.0)*(((minute/5.0)+9)%12)
     s_angle = pi*(1.0/6.0)*(((second/5.0)+9)%12)
-    return h_angle, m_angle, s_angle
+    return h_angle, m_angle, s_angle, hour, minute, second
 
 def addText():
     for i in range(1,13):
@@ -36,20 +37,37 @@ def addText():
         textRect.centery = int(300 + 230*sin(t_angle)) 
         window.blit(text, textRect)
 
+def digital_clock(hour, minute, second):
+    if hour == 0:
+        hour = 12
+    if second < 10:
+        second = "0" + str(second)
+    
+    clock_time = str(hour) + ":" + str(minute) + ":" + str(second)
+    text = myfont.render(clock_time, True, GREY)
+    textRect = text.get_rect()
+    textRect.centerx = 300
+    textRect.centery = 20 
+    window.blit(text, textRect)
+    
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
 
-    h_angle, m_angle, s_angle = updateTime()
+    h_angle, m_angle, s_angle, hour, minute, second = updateTime()
             
     window.fill(WHITE)
 
     pygame.draw.circle(window,BROWN,(300,300),200)    
-    pygame.draw.circle(window, BLUE, (int(300 + 200*cos(h_angle)), int(300 + 200*sin(h_angle))), 20)
-    pygame.draw.circle(window, GREEN, (int(300 + 200*cos(m_angle)), int(300 + 200*sin(m_angle))), 15)
-    pygame.draw.circle(window, PURPLE, (int(300 + 200*cos(s_angle)), int(300 + 200*sin(s_angle))), 10)
+    pygame.draw.circle(window, BLUE, (int(300 + 200*cos(h_angle)), \
+                                      int(300 + 200*sin(h_angle))), 20)
+    pygame.draw.circle(window, GREEN, (int(300 + 200*cos(m_angle)), \
+                                       int(300 + 200*sin(m_angle))), 15)
+    pygame.draw.circle(window, PURPLE, (int(300 + 200*cos(s_angle)), \
+                                        int(300 + 200*sin(s_angle))), 10)
     addText()
+    digital_clock(hour, minute, second)
     pygame.display.update()
     time.sleep(1)
